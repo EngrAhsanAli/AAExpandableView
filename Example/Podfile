@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'AAExpandableView_Example' do
+  pod 'AAExpandableView', :path => '../'
+
+  target 'AAExpandableView_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

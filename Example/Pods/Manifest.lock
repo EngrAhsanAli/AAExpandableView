@@ -1,0 +1,16 @@
+PODS:
+  - AAExpandableView (0.1.0)
+
+DEPENDENCIES:
+  - AAExpandableView (from `../`)
+
+EXTERNAL SOURCES:
+  AAExpandableView:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  AAExpandableView: 08615753833a5b3c27952446487f495d447e018f
+
+PODFILE CHECKSUM: 07fe12f6af65d73e4d76ceb69b8dc46cacda3b7f
+
+COCOAPODS: 1.5.3

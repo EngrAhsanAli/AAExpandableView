@@ -1,0 +1,6 @@
+framework module AAExpandableView {
+  umbrella header "AAExpandableView-umbrella.h"
+
+  export *
+  module * { export * }
+}
