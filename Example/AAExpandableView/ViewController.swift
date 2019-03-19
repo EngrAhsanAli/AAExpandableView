@@ -9,7 +9,8 @@
 import UIKit
 import AAExpandableView
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AAExpandableViewDelegate {
+
     
     // MARK: Properties
     @IBOutlet weak var tableView: AAExpandableView!
@@ -18,6 +19,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK: view cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.aa_delegate = self
         
         for i in 0...10 {
             items.append([])
@@ -50,8 +53,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
         cell.textLabel?.text = "section \(indexPath.section) row \(indexPath.row)"
         cell.textLabel?.backgroundColor = .clear
-        print("Actual Cell ", cell.contentView.frame)
-
         return cell
     }
     
@@ -67,6 +68,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
+    
+    func expandableViewDidOpen(_ section: Int) {
+        print("open section ", section)
+    }
+    
+    func expandableViewDidClose(_ section: Int) {
+        print("close section ", section)
+    }
+    
 }
 
 

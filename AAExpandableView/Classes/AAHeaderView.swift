@@ -8,14 +8,14 @@
 
 import UIKit
 
-public protocol AAExpandableViewDelegate: NSObjectProtocol {
+protocol AAHeaderViewDelegate: NSObjectProtocol {
     func accordionViewDidOpen(_ section:Int)
     func accordionViewDidClose(_ section:Int)
 }
 
 class AAHeaderView: UIView {
     
-    var delegate: AAExpandableViewDelegate?
+    var delegate: AAHeaderViewDelegate?
     var section: Int!
     var tableView: AAExpandableView!
     

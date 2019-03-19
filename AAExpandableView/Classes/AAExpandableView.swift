@@ -8,9 +8,15 @@
 
 import UIKit
 
-open class AAExpandableView : UITableView, AAExpandableViewDelegate {
+public protocol AAExpandableViewDelegate: NSObjectProtocol {
+    func expandableViewDidOpen(_ section:Int)
+    func expandableViewDidClose(_ section:Int)
+}
+
+open class AAExpandableView : UITableView, AAHeaderViewDelegate {
     
     open var sectionOpen: Int = NSNotFound
+    open var aa_delegate: AAExpandableViewDelegate?
 
     // MARK: AAExpandableViewDelegate
     public func accordionViewDidOpen(_ section: Int) {
@@ -32,6 +38,8 @@ open class AAExpandableView : UITableView, AAExpandableViewDelegate {
             self.insertRows(at: indexesPathToInsert, with: .automatic)
             self.endUpdates()
         }
+        
+        aa_delegate?.expandableViewDidOpen(section)
     }
     
     open func shouldOpen(_ section: Int) -> Bool {
@@ -53,6 +61,8 @@ open class AAExpandableView : UITableView, AAExpandableViewDelegate {
             self.deleteRows(at: indexesPathToDelete, with: .top)
             self.endUpdates()
         }
+        
+        aa_delegate?.expandableViewDidClose(section)
     }
     
     open func setHeaderView(_ headerView: UIView, section:Int) -> UIView {
