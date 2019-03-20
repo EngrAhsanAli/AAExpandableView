@@ -11,7 +11,6 @@ import AAExpandableView
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AAExpandableViewDelegate {
 
-    
     // MARK: Properties
     @IBOutlet weak var tableView: AAExpandableView!
     var items:[[Int]?] = []
@@ -32,7 +31,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // MARK: UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 80
+        return 70
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -40,13 +39,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if (!items.isEmpty) {
-            if self.tableView.shouldOpen(section) {
-                return items[section]!.count
-            }
-        }
-        return 0
+        return self.tableView.numOfRows(section, datasource: items as Array<AnyObject>)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -58,23 +51,34 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // MARK: UITableViewDelegate
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2") as! HeaderCell
-        cell.titleLabel.text = "Section \(section), touch here!"
-        return self.tableView.setHeaderView(cell.contentView, section: section)
 
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2") as! HeaderCell
+        cell.backgroundColor = cell.contentView.backgroundColor
+        return self.tableView.setHeaderView(cell, section: section)
+
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let vv = self.tableView.sectionHeaderView as? HeaderCell {
+            if self.tableView.isOpen(section) {
+                vv.titleLabel.text = "Opened"
+            }
+            else {
+                vv.titleLabel.text = "Section \(section), touch here!"
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
     
-    func expandableViewDidOpen(_ section: Int) {
-        print("open section ", section)
+    func expandableViewDidOpen(_ view: UIView, section: Int) {
+        
     }
     
-    func expandableViewDidClose(_ section: Int) {
-        print("close section ", section)
+    func expandableViewDidClose(_ view: UIView, section: Int) {
+        
     }
     
 }

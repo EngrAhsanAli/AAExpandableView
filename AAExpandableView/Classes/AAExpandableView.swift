@@ -9,20 +9,26 @@
 import UIKit
 
 public protocol AAExpandableViewDelegate: NSObjectProtocol {
-    func expandableViewDidOpen(_ section:Int)
-    func expandableViewDidClose(_ section:Int)
+    func expandableViewDidOpen(_ view: UIView, section:Int)
+    func expandableViewDidClose(_ view: UIView, section:Int)
 }
 
 open class AAExpandableView : UITableView, AAHeaderViewDelegate {
     
     open var sectionOpen: Int = NSNotFound
     open var aa_delegate: AAExpandableViewDelegate?
+    open var refreshChange: RowAnimation? = .automatic
+    var sectionView: AAHeaderView?
 
+    open var sectionHeaderView: UIView? {
+        return sectionView?.headerView
+    }
+    
     // MARK: AAExpandableViewDelegate
-    public func accordionViewDidOpen(_ section: Int) {
+    public func didOpen(_ section: Int) {
         
         if self.sectionOpen != NSNotFound {
-            accordionViewDidClose(self.sectionOpen)
+            didClose(self.sectionOpen)
         }
         
         self.sectionOpen = section
@@ -39,14 +45,21 @@ open class AAExpandableView : UITableView, AAHeaderViewDelegate {
             self.endUpdates()
         }
         
-        aa_delegate?.expandableViewDidOpen(section)
+        let headerView = self.delegate?.tableView!(self, viewForHeaderInSection: section) as! AAHeaderView
+        aa_delegate?.expandableViewDidOpen(headerView.headerView, section: section)
+        refreshChangedSection(section)
     }
     
-    open func shouldOpen(_ section: Int) -> Bool {
+    func refreshChangedSection(_ section: Int) {
+        guard let anim = refreshChange else { return }
+        self.reloadSections(IndexSet(integer: section), with: anim)
+    }
+    
+    open func isOpen(_ section: Int) -> Bool {
         return (sectionOpen != NSNotFound && section == sectionOpen)
     }
     
-    public func accordionViewDidClose(_ section: Int) {
+    public func didClose(_ section: Int) {
         
         let numberOfRows = self.dataSource?.tableView(self, numberOfRowsInSection: section)
         var indexesPathToDelete: [IndexPath] = []
@@ -62,10 +75,22 @@ open class AAExpandableView : UITableView, AAHeaderViewDelegate {
             self.endUpdates()
         }
         
-        aa_delegate?.expandableViewDidClose(section)
+        let headerView = self.delegate?.tableView!(self, viewForHeaderInSection: section) as! AAHeaderView
+        aa_delegate?.expandableViewDidClose(headerView.headerView, section: section)
+        refreshChangedSection(section)
     }
     
     open func setHeaderView(_ headerView: UIView, section:Int) -> UIView {
-        return AAHeaderView(tableView: self, headerView: headerView, section: section)
+        self.sectionView = AAHeaderView(tableView: self, headerView: headerView, section: section)
+        return self.sectionView!
+    }
+    
+    open func numOfRows(_ section: Int, datasource: Array<AnyObject>) -> Int {
+        if (!datasource.isEmpty) {
+            if self.isOpen(section) {
+                return datasource[section].count
+            }
+        }
+        return 0
     }
 }
